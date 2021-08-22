@@ -16,6 +16,9 @@
 	Add-ChromeExtension @Parameters
 
 	.NOTES
+	Enable Chrome Extensions Developer Mode first
+
+	.NOTES
 	Enable extension manually by opening the chrome://extensions page to load unpacked extensions one by one
 	by selecting their folders (where the manifest is) in "%LOCALAPPDATA%\Google\Chrome\User Data\Default\Extensions"
 #>
