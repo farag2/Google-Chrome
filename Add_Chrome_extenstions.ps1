@@ -32,11 +32,14 @@ function Add-ChromeExtension
 		$ExtentionIDs
 	)
 
+	# Create a folder to expand all files to
 	$DownloadsFolder = Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" -Name "{374DE290-123F-4565-9164-39C4925E467B}"
 	if (-not (Test-Path -Path "$DownloadsFolder\Extensions"))
 	{
 		New-Item -Path "$DownloadsFolder\Extensions" -ItemType Directory -Force
 	}
+
+	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 	# Download 7ZIP 21.03 x64 due to .crx cannot be expanded: neither with System.IO.Compression.FileSystem, nor with the Expand-Archive cmdlet
 	$DownloadsFolder = Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" -Name "{374DE290-123F-4565-9164-39C4925E467B}"
@@ -58,9 +61,6 @@ function Add-ChromeExtension
 	foreach ($ExtentionID in $ExtentionIDs)
 	{
 		# Downloading extension
-		[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-
-		# https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm
 		$Parameters = @{
 			Uri     = "https://clients2.google.com/service/update2/crx?response=redirect&os=win&arch=x86-64&os_arch=x86-64&nacl_arch=x86-64&prod=chromiumcrx&prodchannel=unknown&prodversion=52.0.2743.116&acceptformat=crx2,crx3&x=id%3D$($ExtentionID)%26uc"
 			OutFile = "$DownloadsFolder\Extensions\$ExtentionID.crx"
