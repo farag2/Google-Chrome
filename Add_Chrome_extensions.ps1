@@ -42,7 +42,6 @@ function Add-ChromeExtension
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
 	# Download 7ZIP 21.03 x64 due to .crx cannot be expanded: neither with System.IO.Compression.FileSystem, nor with the Expand-Archive cmdlet
-	$DownloadsFolder = Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" -Name "{374DE290-123F-4565-9164-39C4925E467B}"
 	$Parameters = @{
 		Uri = "https://www.7-zip.org/a/7z2103-x64.msi"
 		OutFile = "$DownloadsFolder\Extensions\7z2103-x64.msi"
