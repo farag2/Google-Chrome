@@ -11,7 +11,7 @@
 	.NOTES
 	In order extensions work you need to store the .crx files
 #>
-function New-ChromeExtension
+function Add-ChromeExtension
 {
 	[CmdletBinding()]
 	param
@@ -86,4 +86,4 @@ function New-ChromeExtension
 
 	Remove-Item -Path "$DownloadsFolder\Extensions\7zip", "$DownloadsFolder\Extensions\7z2103-x64.msi" -Recurse -Force
 }
-New-ChromeExtension -ExtensionID @("cjpalhdlnbpafiamejdnhcphjbkeiagm", "dhdgffkkebhmkfjojejmpbldmpobfkfo") -Verbose
+Add-ChromeExtension -ExtensionID @("cjpalhdlnbpafiamejdnhcphjbkeiagm", "dhdgffkkebhmkfjojejmpbldmpobfkfo") -Verbose
