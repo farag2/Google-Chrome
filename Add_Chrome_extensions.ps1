@@ -74,9 +74,10 @@ function Add-ChromeExtension
 		}
 
 		$Arguments = @(
-			"x"
-			"$DownloadsFolder\Extensions\$ExtentionID.crx"
-			"-o`"$DownloadsFolder\Extensions\$ExtentionID`""
+			"x",
+			"$DownloadsFolder\Extensions\$ExtentionID.crx",
+			"-o`"$DownloadsFolder\Extensions\$ExtentionID`"",
+			"-y"
 		)
 		Start-Process "$DownloadsFolder\Extensions\7zip\Files\7-Zip\7z.exe" -ArgumentList $Arguments -Wait
 
