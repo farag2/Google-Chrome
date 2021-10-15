@@ -10,7 +10,8 @@
 		ExtentionIDs = @(
 			"cjpalhdlnbpafiamejdnhcphjbkeiagm",
 			"dhdgffkkebhmkfjojejmpbldmpobfkfo",
-			"mnjggcdmjocbbbhaepdhchncahnbgone"
+			"mnjggcdmjocbbbhaepdhchncahnbgone",
+			"efaidnbmnnnibpcajpcglclefindmkaj"
 		)
 	}
 	Add-ChromeExtension @Parameters
@@ -45,7 +46,8 @@ function Add-ChromeExtension
 	$Parameters = @{
 		Uri = "https://www.7-zip.org/a/7z2103-x64.msi"
 		OutFile = "$DownloadsFolder\Extensions\7z2103-x64.msi"
-		Verbose = [switch]::Present
+		UseBasicParsing = $true
+		Verbose         = $true
 	}
 	Invoke-WebRequest @Parameters
 
@@ -61,9 +63,10 @@ function Add-ChromeExtension
 	{
 		# Downloading extension
 		$Parameters = @{
-			Uri     = "https://clients2.google.com/service/update2/crx?response=redirect&os=win&arch=x86-64&os_arch=x86-64&nacl_arch=x86-64&prod=chromiumcrx&prodchannel=unknown&prodversion=52.0.2743.116&acceptformat=crx2,crx3&x=id%3D$($ExtentionID)%26uc"
-			OutFile = "$DownloadsFolder\Extensions\$ExtentionID.crx"
-			Verbose = [switch]::Present
+			Uri             = "https://clients2.google.com/service/update2/crx?response=redirect&os=win&arch=x86-64&os_arch=x86-64&nacl_arch=x86-64&prod=chromiumcrx&prodchannel=unknown&prodversion=52.0.2743.116&acceptformat=crx2,crx3&x=id%3D$($ExtentionID)%26uc"
+			OutFile         = "$DownloadsFolder\Extensions\$ExtentionID.crx"
+			UseBasicParsing = $true
+			Verbose         = $true
 		}
 		Invoke-WebRequest @Parameters
 
@@ -102,7 +105,9 @@ $Parameters = @{
 		# https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo
 		"dhdgffkkebhmkfjojejmpbldmpobfkfo",
 		# https://chrome.google.com/webstore/detail/sponsorblock-for-youtube/mnjggcdmjocbbbhaepdhchncahnbgone
-		"mnjggcdmjocbbbhaepdhchncahnbgone"
+		"mnjggcdmjocbbbhaepdhchncahnbgone",
+		# https://chrome.google.com/webstore/detail/adobe-acrobat/efaidnbmnnnibpcajpcglclefindmkaj
+		"efaidnbmnnnibpcajpcglclefindmkaj"
 	)
 }
 Add-ChromeExtension @Parameters
