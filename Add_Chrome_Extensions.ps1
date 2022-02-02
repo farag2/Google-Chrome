@@ -96,6 +96,9 @@ function Add-ChromeExtension
 	# Start-Process -FilePath "$env:ProgramFiles\Google\Chrome\Application\chrome.exe" -ArgumentList "-new-tab chrome://extensions/"
 
 	Remove-Item -Path "$DownloadsFolder\Extensions" -Recurse -Force
+
+	# Set tp clipboard the full path to extention to paste
+    	"$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Extensions\$ExtentionID" | Set-Clipboard
 }
 
 $Parameters = @{
