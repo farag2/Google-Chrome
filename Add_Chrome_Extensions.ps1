@@ -100,8 +100,8 @@ function Add-ChromeExtension
 		Copy-Item -Path "$DownloadsFolder\Extensions\$ExtentionID" -Destination "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Extensions" -Recurse -Force
 	}
 
-	# Open the chrome://extensions page in a new tab to activate all installed extensions manually
-	# Start-Process -FilePath "$env:ProgramFiles\Google\Chrome\Application\chrome.exe" -ArgumentList "-new-tab chrome://extensions/"
+	# Open https://greasyfork.org/ru/scripts/19993-ru-adlist-js-fixes
+	Start-Process -FilePath "$env:ProgramFiles\Google\Chrome\Application\chrome.exe" -ArgumentList "https://greasyfork.org/ru/scripts/19993-ru-adlist-js-fixes"
 
 	Remove-Item -Path "$DownloadsFolder\Extensions" -Recurse -Force
 
