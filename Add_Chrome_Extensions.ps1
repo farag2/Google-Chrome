@@ -10,8 +10,7 @@
 		ExtentionIDs = @(
 			"cjpalhdlnbpafiamejdnhcphjbkeiagm",
 			"dhdgffkkebhmkfjojejmpbldmpobfkfo",
-			"mnjggcdmjocbbbhaepdhchncahnbgone",
-			"efaidnbmnnnibpcajpcglclefindmkaj"
+			"mnjggcdmjocbbbhaepdhchncahnbgone"
 		)
 	}
 	Add-ChromeExtension @Parameters
@@ -42,19 +41,28 @@ function Add-ChromeExtension
 
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-	# Download 7ZIP 21.03 x64 due to .crx cannot be expanded: neither with System.IO.Compression.FileSystem, nor with the Expand-Archive cmdlet
+	# Get the latest 7-Zip download URL
 	$Parameters = @{
-		Uri = "https://www.7-zip.org/a/7z2103-x64.msi"
-		OutFile = "$DownloadsFolder\Extensions\7z2103-x64.msi"
+		Uri             = "https://sourceforge.net/projects/sevenzip/best_release.json"
+		UseBasicParsing = $true
+		Verbose         = $true
+	}
+	$bestRelease = (Invoke-RestMethod @Parameters).platform_releases.windows.filename.replace("exe", "msi")
+
+	# Download the latest 7-Zip x64
+	$DownloadsFolder = Get-ItemPropertyValue -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" -Name "{374DE290-123F-4565-9164-39C4925E467B}"
+	$Parameters = @{
+		Uri             = "https://nchc.dl.sourceforge.net/project/sevenzip$($bestRelease)"
+		OutFile         = "$DownloadsFolder\7-Zip.msi"
 		UseBasicParsing = $true
 		Verbose         = $true
 	}
 	Invoke-WebRequest @Parameters
 
-	# Expand 7z2103-x64.msi to 7zip folder
+	# Expand 7-Zip
 	$Arguments = @(
-		"/a `"$DownloadsFolder\Extensions\7z2103-x64.msi`""
-		"TARGETDIR=`"$DownloadsFolder\Extensions\7zip`""
+		"/a `"$DownloadsFolder\7-Zip.msi`""
+		"TARGETDIR=`"$DownloadsFolder\Extensions\7-zip`""
 		"/qb"
 	)
 	Start-Process "msiexec" -ArgumentList $Arguments -Wait
@@ -63,7 +71,7 @@ function Add-ChromeExtension
 	{
 		# Downloading extension
 		$Parameters = @{
-			Uri             = "https://clients2.google.com/service/update2/crx?response=redirect&os=win&arch=x86-64&os_arch=x86-64&nacl_arch=x86-64&prod=chromiumcrx&prodchannel=unknown&prodversion=52.0.2743.116&acceptformat=crx2,crx3&x=id%3D$($ExtentionID)%26uc"
+			Uri             = "https://clients2.google.com/service/update2/crx?response=redirect&prodversion=49.0&acceptformat=crx3&x=id%3D$($ExtentionID)%26uc"
 			OutFile         = "$DownloadsFolder\Extensions\$ExtentionID.crx"
 			UseBasicParsing = $true
 			Verbose         = $true
@@ -82,7 +90,7 @@ function Add-ChromeExtension
 			"-o`"$DownloadsFolder\Extensions\$ExtentionID`"",
 			"-y"
 		)
-		Start-Process "$DownloadsFolder\Extensions\7zip\Files\7-Zip\7z.exe" -ArgumentList $Arguments -Wait
+		Start-Process "$DownloadsFolder\Extensions\7-zip\Files\7-Zip\7z.exe" -ArgumentList $Arguments -Wait
 
 		# "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Extensions" is where all extensions are located
 		if (-not (Test-Path -Path "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Extensions"))
@@ -98,7 +106,7 @@ function Add-ChromeExtension
 	Remove-Item -Path "$DownloadsFolder\Extensions" -Recurse -Force
 
 	# Set tp clipboard the full path to extention to paste
-    	"$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Extensions\$ExtentionID" | Set-Clipboard
+	"$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Extensions\$ExtentionID" | Set-Clipboard
 }
 
 $Parameters = @{
@@ -108,9 +116,7 @@ $Parameters = @{
 		# https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo
 		"dhdgffkkebhmkfjojejmpbldmpobfkfo",
 		# https://chrome.google.com/webstore/detail/sponsorblock-for-youtube/mnjggcdmjocbbbhaepdhchncahnbgone
-		"mnjggcdmjocbbbhaepdhchncahnbgone",
-		# https://chrome.google.com/webstore/detail/adobe-acrobat/efaidnbmnnnibpcajpcglclefindmkaj
-		"efaidnbmnnnibpcajpcglclefindmkaj"
+		"mnjggcdmjocbbbhaepdhchncahnbgone"
 	)
 }
 Add-ChromeExtension @Parameters
