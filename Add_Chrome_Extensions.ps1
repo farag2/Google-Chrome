@@ -32,46 +32,21 @@ function Add-ChromeExtension
 		$ExtentionIDs
 	)
 
-	# Create a folder to expand all files to
-	$DownloadsFolder = Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" -Name "{374DE290-123F-4565-9164-39C4925E467B}"
-	if (-not (Test-Path -Path "$DownloadsFolder\Extensions"))
-	{
-		New-Item -Path "$DownloadsFolder\Extensions" -ItemType Directory -Force
-	}
-
 	[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-	# Get the latest 7-Zip download URL
-	$Parameters = @{
-		Uri             = "https://sourceforge.net/projects/sevenzip/best_release.json"
-		UseBasicParsing = $true
-		Verbose         = $true
-	}
-	$bestRelease = (Invoke-RestMethod @Parameters).platform_releases.windows.filename.replace("exe", "msi")
-
-	# Download the latest 7-Zip x64
-	$DownloadsFolder = Get-ItemPropertyValue -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" -Name "{374DE290-123F-4565-9164-39C4925E467B}"
-	$Parameters = @{
-		Uri             = "https://nchc.dl.sourceforge.net/project/sevenzip$($bestRelease)"
-		OutFile         = "$DownloadsFolder\7-Zip.msi"
-		UseBasicParsing = $true
-		Verbose         = $true
-	}
-	Invoke-WebRequest @Parameters
-
-	# Expand 7-Zip
-	$Arguments = @(
-		"/a `"$DownloadsFolder\7-Zip.msi`""
-		"TARGETDIR=`"$DownloadsFolder\Extensions\7-zip`""
-		"/qb"
-	)
-	Start-Process "msiexec" -ArgumentList $Arguments -Wait
+	$DownloadsFolder = Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" -Name "{374DE290-123F-4565-9164-39C4925E467B}"
 
 	foreach ($ExtentionID in $ExtentionIDs)
 	{
+		# Create a folder to expand all files to
+		if (-not (Test-Path -Path "$DownloadsFolder\Extensions\$ExtentionID"))
+		{
+			New-Item -Path "$DownloadsFolder\Extensions\$ExtentionID" -ItemType Directory -Force
+		}
+
 		# Downloading extension
 		$Parameters = @{
-			Uri             = "https://clients2.google.com/service/update2/crx?response=redirect&prodversion=49.0&acceptformat=crx3&x=id%3D$($ExtentionID)%26uc"
+			Uri             = "https://clients2.google.com/service/update2/crx?response=redirect&prodversion=110.0&acceptformat=crx3&x=id%3D$($ExtentionID)%26uc"
 			OutFile         = "$DownloadsFolder\Extensions\$ExtentionID.crx"
 			UseBasicParsing = $true
 			Verbose         = $true
@@ -84,13 +59,8 @@ function Add-ChromeExtension
 			Copy-Item -Path $_.FullName -Destination $NewName -Force
 		}
 
-		$Arguments = @(
-			"x",
-			"$DownloadsFolder\Extensions\$ExtentionID.crx",
-			"-o`"$DownloadsFolder\Extensions\$ExtentionID`"",
-			"-y"
-		)
-		Start-Process "$DownloadsFolder\Extensions\7-zip\Files\7-Zip\7z.exe" -ArgumentList $Arguments -Wait
+		# Expand extension
+		& tar.exe -x -f "$DownloadsFolder\Extensions\$ExtentionID.crx" -C "$DownloadsFolder\Extensions\$ExtentionID" -v
 
 		# "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Extensions" is where all extensions are located
 		if (-not (Test-Path -Path "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Extensions"))
@@ -100,13 +70,15 @@ function Add-ChromeExtension
 		Copy-Item -Path "$DownloadsFolder\Extensions\$ExtentionID" -Destination "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Extensions" -Recurse -Force
 	}
 
-	# Open https://greasyfork.org/ru/scripts/19993-ru-adlist-js-fixes
-	Start-Process -FilePath "$env:ProgramFiles\Google\Chrome\Application\chrome.exe" -ArgumentList "https://greasyfork.org/ru/scripts/19993-ru-adlist-js-fixes"
+	if (Test-Path -Path "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Extensions\dhdgffkkebhmkfjojejmpbldmpobfkfo")
+	{
+		# Open https://greasyfork.org/ru/scripts/19993-ru-adlist-js-fixes
+		Start-Process -FilePath "$env:ProgramFiles\Google\Chrome\Application\chrome.exe" -ArgumentList "https://greasyfork.org/ru/scripts/19993-ru-adlist-js-fixes"
+	}
 
 	Remove-Item -Path "$DownloadsFolder\Extensions" -Recurse -Force
 
-	# Set tp clipboard the full path to extention to paste
-	"$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Extensions\$ExtentionID" | Set-Clipboard
+	Invoke-Item -Path "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Extensions"
 }
 
 $Parameters = @{
