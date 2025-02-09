@@ -4,6 +4,9 @@
 
 	.PARAMETER ExtensionIDs
 	String value of an extension ID taken from the Chrome Web Store URL for the extension
+
+	.LINKS
+ 	https://developer.chrome.com/docs/extensions/how-to/distribute/install-extensions
 #>
 function Add-ChromeExtension
 {
