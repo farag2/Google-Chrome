@@ -31,7 +31,7 @@ Add-ChromeExtension -ExtensionIDs @(
 	# https://chromewebstore.google.com/detail/ublock-origin-lite/ddkjiahejlhfcafbddmgiahcphecmpfh
 	"ddkjiahejlhfcafbddmgiahcphecmpfh",
 	# https://chrome.google.com/webstore/detail/sponsorblock-for-youtube/mnjggcdmjocbbbhaepdhchncahnbgone
- 	"mnjggcdmjocbbbhaepdhchncahnbgone"
-  	# https://chrome.google.com/webstore/detail/return-youtube-dislike/gebbhagfogifgggkldgodflihgfeippi
-   	"gebbhagfogifgggkldgodflihgfeippi"
+	"mnjggcdmjocbbbhaepdhchncahnbgone"
+	# https://chrome.google.com/webstore/detail/return-youtube-dislike/gebbhagfogifgggkldgodflihgfeippi
+	"gebbhagfogifgggkldgodflihgfeippi"
 )
